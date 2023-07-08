@@ -1,10 +1,10 @@
 import React from 'react';
-
+import { SpinnerContainer } from './SpinnerStyled';
 import './Spinner.css';
 
 const Spinner = () => {
   return (
-    <div>
+    <SpinnerContainer marginTop={'10rem'}>
       
         <div>
           <center>
@@ -13,7 +13,7 @@ const Spinner = () => {
             </div>
           </center>
         </div>
-    </div>
+    </SpinnerContainer>
   );
 };
 

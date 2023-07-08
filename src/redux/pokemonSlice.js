@@ -4,7 +4,8 @@ import {createSlice} from '@reduxjs/toolkit';
 const initialState = { 
     name:'',
     pokemon:[],
-    showList: false
+    showList: false,
+    spinnerLoader:false,
 }
 
 /**
@@ -23,19 +24,23 @@ export const pokemonSlice = createSlice({
         addList: (state, action) => {
 
          const   {pokemon,name} = action.payload;
-         state.pokemon = pokemon 
-         state.name = name
-         state.showList = true
-         
+         state.pokemon = pokemon ;
+         state.name = name;
+         state.showList = true;
+         state.spinnerLoader = false;
         
         },
         voidList: (state,action) => {
 
-         state.showList = action.payload
+         state.showList = action.payload;
+        },
+        spinnerLoad: (state,action) => {
+
+         state.spinnerLoader = action.payload;
         },
       
     },
 });
 
-export const {addList,voidList} = pokemonSlice.actions; 
+export const {addList,voidList,spinnerLoad} = pokemonSlice.actions; 
 export default pokemonSlice.reducer;
