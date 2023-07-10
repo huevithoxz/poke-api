@@ -4,7 +4,7 @@ import './Spinner.css';
 
 const Spinner = () => {
   return (
-    <SpinnerContainer marginTop={'10rem'}>
+    <SpinnerContainer margintop={'10rem'}>
       
         <div>
           <center>

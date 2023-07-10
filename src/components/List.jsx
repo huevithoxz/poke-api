@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { voidList } from '../redux/pokemonSlice';
 import { useDispatch } from 'react-redux';
-import { ListContainer,ImgContainer } from './ListStyled';
+import { Tilt } from 'react-tilt';
+import { ListContainer, ImgContainer } from './ListStyled';
 import Spinner from './Spinner/Spinner';
 import { Button, Typography } from '@mui/material';
 import LandingError from './LandingVoid/LandingError';
+import useGetCharacters from '../customHook/pokemonService';
 /**
  *  List of pokemons
  *
@@ -21,7 +23,14 @@ export const List = () => {
   const pokemon = useSelector((state) => state.pokemons);
   const show = useSelector((state) => state.pokemons.showList);
   const spinn = useSelector((state) => state.pokemons.spinnerLoader);
+  const { getPokemons } = useGetCharacters();
 
+  /**
+   * stracting url and name to pokemon water
+   */
+  useEffect(() => {
+    getPokemons();
+  }, []);
   /**
    * stracting url and name to pokemon water
    */
@@ -57,56 +66,95 @@ export const List = () => {
     setToggleView(!toggleView);
     dispatch(voidList(toggleView));
   };
-  // marginLeft={'1.6rem'} marginRight={'1.6rem'} padding={'0.8rem'}
-  return (
-    <ListContainer marginTop={'10rem'}>
-      <ListContainer column width={'auto'}>
-      {show &&  <ListContainer justifyContent={'space-evenly'}><Typography variant='h6' gutterBottom>
-                          Poke List
-                        </Typography></ListContainer>}
-        <ListContainer>
-        
-          <ol>
-            {show &&
-              imgList.map((poke, i) => {
-                const uri = poke.sprites.front_shiny;
-                return (
-                  <li>
-                    <ListContainer key={i} border borderR back padding={'8px'}>
-                      <ListContainer column font>
-                        <Typography variant='h5' gutterBottom>
-                          {poke.name}
-                        </Typography>
-                        <Typography variant='h5' gutterBottom>
-                          #{poke.id}
-                        </Typography>
-                      </ListContainer>
-                      <ImgContainer>{poke.sprites !== undefined && <img src={uri} />}</ImgContainer>
-                      
-                      
-                    </ListContainer>
-                  </li>
-                );
-              })}
-          </ol>
+  const cursorRef = useRef(null);
+  let mouseX = 0;
+  let mouseY = 0;
+  let cursorX = 0;
+  let cursorY = 0;
+  const speed = 0.01;
 
-          {spinn && <Spinner />}
-          {!spinn && !show && <ListContainer border borderR back padding={'8px'} column><LandingError />   <Typography variant='h5' gutterBottom>
-                          Por favor llene la lista
-                        </Typography></ListContainer>  }
+  const animate = () => {
+    let distX = mouseX - cursorX;
+    let distY = mouseY - cursorY;
+
+    cursorX = cursorX + distX * speed;
+    cursorY = cursorY + distY * speed;
+
+    cursorRef.current.style.left = cursorX + 'px';
+    cursorRef.current.style.top = cursorY + 'px';
+
+    requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    animate();
+  }, []);
+
+  return (
+    <ListContainer margintop={'10rem'} column='true'>
+      <div className='bg__gradient' ref={cursorRef}></div>
+      {show && (
+        <ListContainer justifycontent={'space-evenly'}>
+          <Typography variant='h6' gutterBottom>
+            Poke List
+          </Typography>
         </ListContainer>
-        <ListContainer wid={'50%'} justifyContent={'space-evenly'} marginTop={'2rem'}>
-          {!spinn && (
+      )}
+      <ListContainer justifycontent='center' wrap={'true'}>
+        {show &&
+          imgList.map((poke, i) => {
+            const uri = poke.sprites.front_shiny;
+            return (
+              <ListContainer key={i}  margintop='2rem' marginleft={'1.6rem'} >
+                <Tilt
+                  className='card'
+                  options={{
+                    maxTilt: 15,
+                    perspective: 1500,
+                    easing: 'cubic-bezier(.03,.98,.52,.99)',
+                    speed: 500,
+                    glare: false,
+                    maxGlare: 0.2,
+                    scale: 1.01,
+                  }}
+                >
+                  <ListContainer column={'true'} marginbottom={'4rem'} marginleft={'1.4rem'}>   <Typography variant='h5' gutterBottom>
+                    {poke.name}
+                  </Typography>
+                  <Typography variant='h5' gutterBottom>
+                    #{poke.id}
+                  </Typography></ListContainer>
+               
+
+                  <ImgContainer>{poke.sprites !== undefined && <img src={uri} />}</ImgContainer>
+                </Tilt>
+              </ListContainer>
+            );
+          })}
+        {spinn && <Spinner />}
+        {!spinn && !show && (
+          <ListContainer border borderR back padding={'8px'} column>
+            <LandingError />{' '}
+            <Typography variant='h5' gutterBottom>
+              Por favor llene la lista
+            </Typography>
+          </ListContainer>
+        )}
+      </ListContainer>
+      <ListContainer wid={'50%'} justifycontent='space-around' margintop={'2rem'}>
+        {!spinn && (
+          <ListContainer>
+            {' '}
             <Button
               onClick={() => {
                 clearList();
               }}
               variant='contained'
             >
-             {show ? 'Clear List': 'Fill List'}
+              {show ? 'Clear List' : 'Fill List'}
             </Button>
-          )}
-        </ListContainer>
+          </ListContainer>
+        )}
       </ListContainer>
     </ListContainer>
   );
