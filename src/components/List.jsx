@@ -133,7 +133,7 @@ export const List = () => {
           })}
         {spinn && <Spinner />}
         {!spinn && !show && (
-          <ListContainer border borderR back padding={'8px'} column>
+          <ListContainer border={'true'} borderR={'true'}  back={'true'}  padding={'8px'} column>
             <LandingError />{' '}
             <Typography variant='h5' gutterBottom>
               Por favor llene la lista
