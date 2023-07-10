@@ -91,7 +91,7 @@ export const List = () => {
   }, []);
 
   return (
-    <ListContainer margintop={'10rem'} column='true'>
+    <ListContainer margintop={'10rem'} column={'true'}>
       <div className='bg__gradient' ref={cursorRef}></div>
       {show && (
         <ListContainer justifycontent={'space-evenly'}>
@@ -133,7 +133,7 @@ export const List = () => {
           })}
         {spinn && <Spinner />}
         {!spinn && !show && (
-          <ListContainer border={'true'} borderR={'true'}  back={'true'}  padding={'8px'} column>
+          <ListContainer border={'true'} borderr={'true'}  back={'true'}  padding={'8px'} column={'true'}>
             <LandingError />{' '}
             <Typography variant='h5' gutterBottom>
               Por favor llene la lista
